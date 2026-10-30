@@ -1,0 +1,21 @@
+---
+- name: Install and start Apache web server
+  hosts: node1.example.com
+  become: true
+  tasks:
+    - name: Install Apache
+      ansible.builtin.dnf:
+        name: httpd
+        state: present
+    - name: Start and enable Apache
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: true
+    - name: Verify Apache service
+      ansible.builtin.command: systemctl is-active httpd
+      changed_when: false
+      register: apache_status
+    - name: Display Apache status
+      ansible.builtin.debug:
+        msg: "Apache status is {{ apache_status.stdout }}"
